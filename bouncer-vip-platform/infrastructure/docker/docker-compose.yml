@@ -1,0 +1,381 @@
+version: '3.8'
+
+services:
+  # API Gateway (entry point)
+  api-gateway:
+    build:
+      context: ../services/api-gateway
+      dockerfile: ../../infrastructure/docker/api-gateway.Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=dev-secret-change-in-prod
+    depends_on:
+      - redis
+      - crm
+      - scheduling
+      - monitoring
+    networks:
+      - bouncer-network
+
+  # Core Services
+  crm:
+    build:
+      context: ../services/crm
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - nats
+    networks:
+      - bouncer-network
+
+  scheduling:
+    build:
+      context: ../services/scheduling
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - redis
+      - nats
+    networks:
+      - bouncer-network
+
+  on-demand:
+    build:
+      context: ../services/on-demand
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - redis
+      - nats
+    networks:
+      - bouncer-network
+
+  # Operations Services
+  monitoring:
+    build:
+      context: ../services/monitoring
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3004
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - redis
+      - nats
+    networks:
+      - bouncer-network
+
+  erp:
+    build:
+      context: ../services/erp
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3005
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - nats
+    networks:
+      - bouncer-network
+
+  workflow:
+    build:
+      context: ../services/workflow
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3006
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - nats
+    networks:
+      - bouncer-network
+
+  # Portals
+  guard-app:
+    build:
+      context: ../services/guard-app
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3007
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+      - JWT_SECRET=dev-secret-change-in-prod
+    depends_on:
+      - postgres
+      - redis
+      - nats
+    networks:
+      - bouncer-network
+
+  # Advanced Services
+  biometrics:
+    build:
+      context: ../services/biometrics
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3008
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - nats
+    networks:
+      - bouncer-network
+
+  penalty:
+    build:
+      context: ../services/penalty
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3009
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - nats
+    networks:
+      - bouncer-network
+
+  ai-recruitment:
+    build:
+      context: ../services/ai-recruitment
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3010
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - nats
+    networks:
+      - bouncer-network
+
+  psira-compliance:
+    build:
+      context: ../services/psira-compliance
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3011
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - nats
+    networks:
+      - bouncer-network
+
+  # Infrastructure Services
+  analytics:
+    build:
+      context: ../services/analytics
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3012
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - nats
+    networks:
+      - bouncer-network
+
+  notifications:
+    build:
+      context: ../services/notifications
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3013
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+      - SMTP_HOST=mailhog
+      - SMTP_PORT=1025
+    depends_on:
+      - postgres
+      - redis
+      - nats
+      - mailhog
+    networks:
+      - bouncer-network
+
+  audit:
+    build:
+      context: ../services/audit
+      dockerfile: ../../infrastructure/docker/service.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=3014
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NATS_HOST=nats
+      - NATS_PORT=4222
+    depends_on:
+      - postgres
+      - redis
+      - nats
+    networks:
+      - bouncer-network
+
+  # Infrastructure
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=bouncer_express
+      - POSTGRES_USER=bouncer
+      - POSTGRES_PASSWORD=bouncer_dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - bouncer-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - bouncer-network
+
+  nats:
+    image: nats:2.10-alpine
+    ports:
+      - "4222:4222"
+      - "6222:6222"
+    volumes:
+      - nats-data:/data
+    networks:
+      - bouncer-network
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - bouncer-network
+
+volumes:
+  postgres-data:
+  redis-data:
+  nats-data:
+
+networks:
+  bouncer-network:
+    driver: bridge

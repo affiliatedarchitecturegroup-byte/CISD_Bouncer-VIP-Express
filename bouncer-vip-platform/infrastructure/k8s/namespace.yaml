@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bouncer-vip
+  labels:
+    app.kubernetes.io/name: bouncer-vip
+    app.kubernetes.io/part-of: bouncer-platform
