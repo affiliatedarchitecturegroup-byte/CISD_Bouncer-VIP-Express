@@ -1,0 +1,182 @@
+# Bouncer VIP Platform - Observability Stack
+# Monitoring, Logging, and Tracing Configuration
+
+## Prometheus Stack
+
+```yaml
+# infrastructure/k8s/monitoring/prometheus.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - nodes/metrics
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["get"]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    
+    scrape_configs:
+    - job_name: 'kubernetes-nodes'
+      scrape_interval: 30s
+      static_configs:
+      - targets: ['localhost:9100']
+    
+    - job_name: 'bouncer-services'
+      scrape_interval: 15s
+      kubernetes_sd_configs:
+      - role: pod
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+```
+
+## Grafana Dashboards
+
+```yaml
+# infrastructure/k8s/monitoring/grafana.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: monitoring
+data:
+  dashboard.json: |
+    {
+      "dashboard": {
+        "title": "Bouncer VIP Platform",
+        "uid": "bouncer-vip",
+        "panels": [
+          {
+            "title": "Request Rate",
+            "type": "graph",
+            "targets": [
+              {"expr": "sum(rate(http_requests_total[5m]))"}
+            ]
+          },
+          {
+            "title": "Error Rate",
+            "type": "graph", 
+            "targets": [
+              {"expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m]))"}
+            ]
+          },
+          {
+            "title": "Latency P99",
+            "type": "graph",
+            "targets": [
+              {"expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))"}
+            ]
+          },
+          {
+            "title": "Active Connections",
+            "type": "gauge",
+            "targets": [
+              {"expr": "active_connections"}
+            ]
+          }
+        ]
+      }
+    }
+```
+
+## ELK Stack
+
+```yaml
+# infrastructure/k8s/monitoring/elasticsearch.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: logging
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+  namespace: logging
+data:
+  elasticsearch.yml: |
+    cluster.name: bouncer-vip-logging
+    node.name: ${HOSTNAME}
+    discovery.type: single-node
+    xpack.security.enabled: true
+```
+
+## Service Level Objectives
+
+| Service | Availability | Latency P99 | Error Rate |
+|---------|--------------|-------------|-----------|
+| API Gateway | 99.9% | 100ms | 0.1% |
+| CRM | 99.5% | 200ms | 0.5% |
+| Scheduling | 99.5% | 200ms | 0.5% |
+| On-Demand | 99.5% | 500ms | 0.5% |
+| Monitoring | 99.9% | 100ms | 0.1% |
+| ERP | 99.0% | 1000ms | 1.0% |
+| Biometrics | 99.0% | 2000ms | 1.0% |
+
+## Alerting Rules
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: bouncer-alerts
+  namespace: monitoring
+spec:
+  groups:
+  - name: bouncer-platform
+    rules:
+    - alert: HighErrorRate
+      expr: sum(rate(http_requests_total{status=~"5.."}[5m])) > 0.01
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: High error rate detected
+    
+    - alert: HighLatency
+      expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) > 2
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: High latency detected
+    
+    - alert: ServiceDown
+      expr: up == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: Service is down
+```
