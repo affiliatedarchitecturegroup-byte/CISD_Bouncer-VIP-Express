@@ -1,0 +1,47 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'bouncer-vip-express'
+    environment: 'development'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Kong API Gateway
+  - job_name: kong
+    static_configs:
+      - targets: ['kong:8001']
+
+  # NATS JetStream
+  - job_name: nats
+    static_configs:
+      - targets: ['nats:8222']
+
+  # Node Exporter for system metrics
+  - job_name: node
+    static_configs:
+      - targets: ['host.docker.internal:9100']
+
+  # Docker metrics
+  - job_name: docker
+    static_configs:
+      - targets: ['host.docker.internal:9323']
+
+  # Application Services
+  - job_name: bouncer-services
+    static_configs:
+      - targets: ['bouncer-crm:3001', 'bouncer-scheduling:3002', 'bouncer-on-demand:3003', 'bouncer-monitoring:3004', 'bouncer-erp:3005']
+
+  # Express Services
+  - job_name: express-services
+    static_configs:
+      - targets: ['express-wms:4001', 'express-logistics:4002', 'express-last-mile:4003']

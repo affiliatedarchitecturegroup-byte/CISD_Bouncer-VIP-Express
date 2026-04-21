@@ -1,0 +1,128 @@
+_format_version: "3.0"
+
+services:
+  # CRM Service
+  - name: bouncer-crm
+    url: http://bouncer-crm:3001
+    routes:
+      - name: crm-route
+        paths:
+          - /api/crm
+        strip_path: true
+    plugins:
+      - name: rate-limiting
+        config:
+          minute: 100
+          policy: local
+      - name: cors
+        config:
+          origins:
+            - "*"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          headers:
+            - Authorization
+            - Content-Type
+          credentials: true
+
+  # Scheduling Service
+  - name: bouncer-scheduling
+    url: http://bouncer-scheduling:3002
+    routes:
+      - name: scheduling-route
+        paths:
+          - /api/scheduling
+        strip_path: true
+    plugins:
+      - name: rate-limiting
+        config:
+          minute: 100
+          policy: local
+
+  # On-Demand Service
+  - name: bouncer-on-demand
+    url: http://bouncer-on-demand:3003
+    routes:
+      - name: on-demand-route
+        paths:
+          - /api/on-demand
+        strip_path: true
+
+  # Monitoring Service
+  - name: bouncer-monitoring
+    url: http://bouncer-monitoring:3004
+    routes:
+      - name: monitoring-route
+        paths:
+          - /api/monitoring
+        strip_path: true
+
+  # ERP Service
+  - name: bouncer-erp
+    url: http://bouncer-erp:3005
+    routes:
+      - name: erp-route
+        paths:
+          - /api/erp
+        strip_path: true
+
+  # Client Portal (Web)
+  - name: bouncer-portal-web
+    url: http://bouncer-portal-web:3000
+    routes:
+      - name: portal-web-route
+        paths:
+          - /portal
+        strip_path: true
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 50
+              policy: local
+
+  - name: bouncer-portal-api
+    url: http://bouncer-portal-web:3000/api
+    routes:
+      - name: portal-api-route
+        paths:
+          - /api/portal
+        strip_path: true
+
+  # Express Platform Services
+  - name: express-wms
+    url: http://express-wms:4001
+    routes:
+      - name: wms-route
+        paths:
+          - /api/wms
+        strip_path: true
+
+  - name: express-logistics
+    url: http://express-logistics:4002
+    routes:
+      - name: logistics-route
+        paths:
+          - /api/logistics
+        strip_path: true
+
+  - name: express-last-mile
+    url: http://express-last-mile:4003
+    routes:
+      - name: last-mile-route
+        paths:
+          - /api/last-mile
+        strip_path: true
+
+# JWT Plugin for Authentication
+jwt_secrets:
+  - consumer: bouncer-app
+    key: bouncer-secret-key
+    algorithm: RS256
+    rsa_public_key: |
+      -----BEGIN PUBLIC KEY-----
+      (Configure in production)
+      -----END PUBLIC KEY-----

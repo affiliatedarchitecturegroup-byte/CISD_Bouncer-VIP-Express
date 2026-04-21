@@ -1,0 +1,169 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  kong:
+    image: kong:3.4-alpine
+    container_name: bouncer-kong
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: postgres
+      KONG_PG_PORT: 5432
+      KONG_PG_USER: bouncer
+      KONG_PG_PASSWORD: ${KONG_PASSWORD:-dev_password}
+      KONG_PG_DATABASE: kong
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+    ports:
+      - "8000:8000"   # HTTP
+      - "8443:8443"   # HTTPS
+      - "8001:8001"   # Admin HTTP
+      - "8444:8444"   # Admin HTTPS
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./infrastructure/docker/kong.yml:/usr/local/kong/kong.yml:ro
+    networks:
+      - bouncer-network
+
+  # Database Layer
+  postgres:
+    image: postgres:15-alpine
+    container_name: bouncer-postgres
+    environment:
+      POSTGRES_DB: bouncer_express
+      POSTGRES_USER: bouncer
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bouncer"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bouncer-network
+
+  mongodb:
+    image: mongo:7.0
+    container_name: bouncer-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: bouncer
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-dev_password}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - bouncer-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: bouncer-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - bouncer-network
+
+  # Event Streaming
+  nats:
+    image: nats:2.10-alpine
+    container_name: bouncer-nats
+    ports:
+      - "4222:4222"   # Client
+      - "8222:8222"   # Monitoring
+      - "6222:6222"   # Clustering
+    command: --js
+    volumes:
+      - nats_data:/data
+    networks:
+      - bouncer-network
+
+  # Ingress
+  traefik:
+    image: traefik:3.0
+    container_name: bouncer-traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.email=dev@bouncervip.co.za"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_data:/letsencrypt
+    networks:
+      - bouncer-network
+
+  # Observability
+  grafana:
+    image: grafana/grafana:10.2
+    container_name: bouncer-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-dev_password}
+      GF_INSTALL_PLUGINS: grafana-piechart-panel
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infrastructure/docker/grafana/provisioning:/etc/grafana/provisioning:ro
+    networks:
+      - bouncer-network
+
+  prometheus:
+    image: prom/prometheus:v2.48
+    container_name: bouncer-prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus_data:/prometheus
+      - ./infrastructure/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - bouncer-network
+
+  tempo:
+    image: grafana/tempo:2.3
+    container_name: bouncer-tempo
+    command: -config.file=/etc/tempo.yml
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+      - "16686:16686" # Jaeger UI
+    volumes:
+      - tempo_data:/var/lib/tempo
+      - ./infrastructure/docker/tempo/tempo.yml:/etc/tempo.yml:ro
+    networks:
+      - bouncer-network
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  redis_data:
+  nats_data:
+  traefik_data:
+  grafana_data:
+  prometheus_data:
+  tempo_data:
+
+networks:
+  bouncer-network:
+    driver: bridge

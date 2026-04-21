@@ -1,0 +1,35 @@
+{
+  "name": "bouncer-vip-express-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bouncer VIP Express - Polyglot Microservices Platform",
+  "workspaces": [
+    "bouncer-vip-platform/services/*",
+    "express-platform/services/*",
+    "shared/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:bouncer\" \"npm run dev:express\"",
+    "dev:bouncer": "npm run dev --workspaces --if-present",
+    "dev:express": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "concurrently": "^8.2.2",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "packageManager": "npm@10.0.0"
+}
