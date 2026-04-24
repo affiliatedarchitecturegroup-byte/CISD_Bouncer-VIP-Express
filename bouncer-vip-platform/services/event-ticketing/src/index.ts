@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const tickets = [];
+app.get("/api/tickets", (r, s) => s.json({ data: tickets }));
+app.post("/api/ticket/buy", (r, s) => s.json({ ticket_id: "tk1", type: "vip" }));
+app.post("/api/ticket/scan", (r, s) => s.json({ valid: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5105;
+app.listen(PORT, () => console.log("Ticketing on " + PORT));
+export default app;

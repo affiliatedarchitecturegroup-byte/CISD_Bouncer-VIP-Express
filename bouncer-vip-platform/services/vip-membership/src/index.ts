@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const tiers = ["silver", "gold", "platinum", "black"];
+app.get("/api/membership/tiers", (r, s) => s.json({ data: tiers }));
+app.post("/api/membership/apply", (r, s) => s.json({ member_id: "m1", tier: "gold" }));
+app.get("/api/rewards/balance", (r, s) => s.json({ points: 1500 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5100;
+app.listen(PORT, () => console.log("VIP Membership on " + PORT));
+export default app;
