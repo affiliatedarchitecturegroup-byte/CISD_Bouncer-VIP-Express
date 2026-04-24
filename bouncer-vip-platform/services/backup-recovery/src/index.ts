@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/backups", (r, s) => s.json({ data: [] }));
+app.post("/api/backup", (r, s) => s.json({ created: true }));
+app.post("/api/restore", (r, s) => s.json({ restored: true }));
+app.get("/api/dr", (r, s) => s.json({ status: "ready" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4003;
+app.listen(PORT, () => console.log("Backup on " + PORT));
+export default app;

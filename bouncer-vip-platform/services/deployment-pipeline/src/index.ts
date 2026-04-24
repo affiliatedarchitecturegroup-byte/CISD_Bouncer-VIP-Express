@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/deployments", (r, s) => s.json({ data: [] }));
+app.post("/api/deploy", (r, s) => s.json({ deployed: true }));
+app.post("/api/rollback", (r, s) => s.json({ rolled_back: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4002;
+app.listen(PORT, () => console.log("Deploy on " + PORT));
+export default app;
