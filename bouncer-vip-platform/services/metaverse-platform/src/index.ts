@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const spaces = [];
+app.get("/api/spaces", (r, s) => s.json({ data: spaces }));
+app.post("/api/avatar", (r, s) => s.json({ avatar_id: "av1" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4801;
+app.listen(PORT, () => console.log("Metaverse on " + PORT));
+export default app;
