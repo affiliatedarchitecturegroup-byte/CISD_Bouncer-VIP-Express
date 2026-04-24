@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const logs = [];
+app.post("/api/audit", (r, s) => { logs.push(r.body); s.json({ success: true }); });
+app.get("/api/audit", (r, s) => s.json({ success: true, data: logs }));
+app.get("/api/compliance", (r, s) => s.json({ score: 95 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3701;
+app.listen(PORT, () => console.log("Security Audit on " + PORT));
+export default app;
