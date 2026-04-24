@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const preferences = { drink: "cognac", music: "r&b" };
+app.get("/api/preferences/:id", (r, s) => s.json(preferences));
+app.get("/api/history/:id", (r, s) => s.json({ visits: 10, spent: 5000 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5303;
+app.listen(PORT, () => console.log("VIPTracking on " + PORT));
+export default app;

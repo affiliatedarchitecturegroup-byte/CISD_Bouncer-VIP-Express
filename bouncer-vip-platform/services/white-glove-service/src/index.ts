@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const requests = [];
+app.get("/api/requests", (r, s) => s.json({ data: requests }));
+app.post("/api/request", (r, s) => s.json({ ticket_id: "wg1", assigned: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5305;
+app.listen(PORT, () => console.log("WhiteGlove on " + PORT));
+export default app;

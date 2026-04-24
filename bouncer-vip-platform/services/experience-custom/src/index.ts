@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const presets = [{ id: "l1", name: "Romantic", lights: "#ff00ff" }];
+app.get("/api/lighting", (r, s) => s.json({ data: presets }));
+app.post("/api/music/mood", (r, s) => s.json({ playing: "chill" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5301;
+app.listen(PORT, () => console.log("Experience on " + PORT));
+export default app;
