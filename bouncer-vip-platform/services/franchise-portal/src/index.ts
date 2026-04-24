@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const resources = [];
+app.get("/api/resources", (r, s) => s.json({ data: resources }));
+app.get("/api/training", (r, s) => s.json({ courses: [] }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5501;
+app.listen(PORT, () => console.log("FranchisePortal on " + PORT));
+export default app;
