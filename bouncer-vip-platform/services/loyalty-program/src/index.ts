@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const tiers = ["bronze", "silver", "gold", "platinum"];
+app.get("/api/tiers", (r, s) => s.json({ data: tiers }));
+app.get("/api/balance", (r, s) => s.json({ points: 5000 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5700;
+app.listen(PORT, () => console.log("LoyaltyProgram on " + PORT));
+export default app;

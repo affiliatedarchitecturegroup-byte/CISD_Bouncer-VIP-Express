@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const rewards = [];
+app.get("/api/rewards", (r, s) => s.json({ data: rewards }));
+app.post("/api/redeem", (r, s) => s.json({ redeemed: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5701;
+app.listen(PORT, () => console.log("RewardsCatalog on " + PORT));
+export default app;

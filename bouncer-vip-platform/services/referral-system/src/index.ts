@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const referrals = [];
+app.get("/api/referrals", (r, s) => s.json({ data: referrals }));
+app.post("/api/refer", (r, s) => s.json({ code: "REF123", bonus: 500 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5702;
+app.listen(PORT, () => console.log("ReferralSystem on " + PORT));
+export default app;
