@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const entities = [];
+app.post("/api/entity", (r, s) => s.json({ id: "e1", ...r.body }));
+app.get("/api/graph", (r, s) => s.json({ nodes: entities, edges: [] }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4902;
+app.listen(PORT, () => console.log("GraphDB on " + PORT));
+export default app;
