@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const templates = [{ id: "monthly", name: "Monthly Report" }];
+app.get("/api/templates", (r, s) => s.json({ success: true, data: templates }));
+app.post("/api/reports", (r, s) => s.json({ id: "r1", ...r.body }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3604;
+app.listen(PORT, () => console.log("Reports on " + PORT));
+export default app;
