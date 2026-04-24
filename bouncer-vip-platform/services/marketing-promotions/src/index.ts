@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const campaigns = [];
+app.get("/api/campaigns", (r, s) => s.json({ data: campaigns }));
+app.post("/api/campaign/send", (r, s) => s.json({ sent: true, recipients: 1000 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5205;
+app.listen(PORT, () => console.log("Marketing on " + PORT));
+export default app;

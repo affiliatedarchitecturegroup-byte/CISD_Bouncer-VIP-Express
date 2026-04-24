@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const shifts = [];
+app.get("/api/shifts", (r, s) => s.json({ data: shifts }));
+app.post("/api/schedule", (r, s) => s.json({ scheduled: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5202;
+app.listen(PORT, () => console.log("StaffMgmt on " + PORT));
+export default app;

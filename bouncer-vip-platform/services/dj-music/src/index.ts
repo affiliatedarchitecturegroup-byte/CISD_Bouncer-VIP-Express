@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const playlists = [];
+app.get("/api/playlists", (r, s) => s.json({ data: playlists }));
+app.post("/api/dj/book", (r, s) => s.json({ booking_id: "dj1", confirmed: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5200;
+app.listen(PORT, () => console.log("DJ Music on " + PORT));
+export default app;
