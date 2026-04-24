@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/workflows", (r, s) => s.json({ data: [] }));
+app.post("/api/workflows", (r, s) => s.json({ id: "w1", ...r.body }));
+app.post("/api/triggers", (r, s) => s.json({ triggered: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3901;
+app.listen(PORT, () => console.log("Automation on " + PORT));
+export default app;

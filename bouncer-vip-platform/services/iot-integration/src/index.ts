@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/devices", (r, s) => s.json({ data: [] }));
+app.get("/api/sensors/:id", (r, s) => s.json({ temperature: 25, battery: 80 }));
+app.get("/api/drones", (r, s) => s.json({ data: [] }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3903;
+app.listen(PORT, () => console.log("IoT on " + PORT));
+export default app;
