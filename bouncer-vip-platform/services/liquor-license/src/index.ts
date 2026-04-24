@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const licenses = [{ id: "l1", type: "liquor", expires: "2025-12-31" }];
+app.get("/api/licenses", (r, s) => s.json({ data: licenses }));
+app.post("/api/renew", (r, s) => s.json({ renewed: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5400;
+app.listen(PORT, () => console.log("LiquorLicense on " + PORT));
+export default app;

@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const policies = [];
+app.get("/api/policies", (r, s) => s.json({ data: policies }));
+app.post("/api/claim/file", (r, s) => s.json({ claim_id: "c1" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5403;
+app.listen(PORT, () => console.log("InsuranceMgmt on " + PORT));
+export default app;
