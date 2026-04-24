@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const schema = `type Query { users: [User] } type User { id: ID, name: String }`;
+app.get("/api/graphql", (r, s) => s.json({ schema, data: [] }));
+app.post("/api/graphql", (r, s) => s.json({ data: {} }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4602;
+app.listen(PORT, () => console.log("GraphQL on " + PORT));
+export default app;

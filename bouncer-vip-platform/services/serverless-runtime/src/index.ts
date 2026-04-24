@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const functions = [];
+app.get("/api/functions", (r, s) => s.json({ data: functions }));
+app.post("/api/deploy", (r, s) => s.json({ deployed: true, id: "fn1" }));
+app.post("/api/invoke/:id", (r, s) => s.json({ result: {} }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4604;
+app.listen(PORT, () => console.log("Serverless on " + PORT));
+export default app;

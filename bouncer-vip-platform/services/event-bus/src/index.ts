@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const events = [];
+app.post("/api/publish", (r, s) => { events.push(r.body); s.json({ published: true }); });
+app.get("/api/subscribe", (r, s) => s.json({ events: events.slice(-10) }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4601;
+app.listen(PORT, () => console.log("EventBus on " + PORT));
+export default app;
