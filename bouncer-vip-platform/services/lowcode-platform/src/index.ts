@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const projects = [];
+app.get("/api/projects", (r, s) => s.json({ data: projects }));
+app.post("/api/script", (r, s) => s.json({ saved: true }));
+app.post("/api/debug", (r, s) => s.json({ breakpoints: [] }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4702;
+app.listen(PORT, () => console.log("LowCode on " + PORT));
+export default app;

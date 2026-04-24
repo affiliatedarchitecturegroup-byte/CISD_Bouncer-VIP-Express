@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const apis = [{ id: "weather", name: "Weather API" }];
+app.get("/api", (r, s) => s.json({ data: apis }));
+app.post("/api/keys", (r, s) => s.json({ key: "sk_" + Math.random().toString(36) }));
+app.get("/api/usage", (r, s) => s.json({ calls: 1000 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4703;
+app.listen(PORT, () => console.log("APIMarket on " + PORT));
+export default app;

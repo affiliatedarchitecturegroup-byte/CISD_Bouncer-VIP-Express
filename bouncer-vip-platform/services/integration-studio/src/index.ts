@@ -1,0 +1,12 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const flows = [];
+app.get("/api/flows", (r, s) => s.json({ data: flows }));
+app.post("/api/map", (r, s) => s.json({ mapped: true }));
+app.post("/api/transform", (r, s) => s.json({ result: {} }));
+app.post("/api/schedule", (r, s) => s.json({ scheduled: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4704;
+app.listen(PORT, () => console.log("IntStudio on " + PORT));
+export default app;

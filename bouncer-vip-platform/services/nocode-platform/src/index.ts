@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const apps = [];
+app.get("/api/apps", (r, s) => s.json({ data: apps }));
+app.post("/api/build", (r, s) => s.json({ app_id: "app1", ...r.body }));
+app.post("/api/publish", (r, s) => s.json({ published: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4701;
+app.listen(PORT, () => console.log("NoCode on " + PORT));
+export default app;
