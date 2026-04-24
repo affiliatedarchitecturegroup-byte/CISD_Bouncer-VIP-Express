@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const adapters = [];
+app.post("/api/adapt", (r, s) => s.json({ adapted: true, format: "json" }));
+app.get("/api/discover", (r, s) => s.json({ services: [] }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5000;
+app.listen(PORT, () => console.log("UniversalInt on " + PORT));
+export default app;
