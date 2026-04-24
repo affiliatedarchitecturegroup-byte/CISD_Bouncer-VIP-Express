@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const booths = [];
+app.get("/api/booths", (r, s) => s.json({ data: booths }));
+app.post("/api/photo/share", (r, s) => s.json({ shared: true, hashtag: "#vipnight" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5602;
+app.listen(PORT, () => console.log("PhotoExperience on " + PORT));
+export default app;

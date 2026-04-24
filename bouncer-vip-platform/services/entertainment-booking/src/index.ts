@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const artists = [];
+app.get("/api/artists", (r, s) => s.json({ data: artists }));
+app.post("/api/book", (r, s) => s.json({ booking_id: "b1", confirmed: false }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5604;
+app.listen(PORT, () => console.log("EntBooking on " + PORT));
+export default app;
