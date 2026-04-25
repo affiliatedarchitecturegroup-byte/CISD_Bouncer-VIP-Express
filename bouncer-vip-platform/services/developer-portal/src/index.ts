@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const keys = [];
+app.post("/api/key/create", (r, s) => s.json({ key: "pk_live_xxx", rate_limit: 1000 }));
+app.get("/api/usage", (r, s) => s.json({ requests: 5000 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5902;
+app.listen(PORT, () => console.log("DevPortal on " + PORT));
+export default app;

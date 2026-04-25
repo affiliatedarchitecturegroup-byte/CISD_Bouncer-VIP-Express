@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const partners = [];
+app.post("/api/partner/onboard", (r, s) => s.json({ partner_id: "p1", status: "active" }));
+app.get("/api/partner/revenue", (r, s) => s.json({ revenue: 5000 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5903;
+app.listen(PORT, () => console.log("PartnerAPI on " + PORT));
+export default app;
