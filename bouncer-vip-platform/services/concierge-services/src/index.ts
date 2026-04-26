@@ -1,10 +1,4 @@
-import express from "express";
-const app = express();
-app.use(express.json());
-const requests = [];
-app.get("/api/concierge/requests", (r, s) => s.json({ data: requests }));
-app.post("/api/concierge/request", (r, s) => s.json({ ticket_id: "c1", status: "pending" }));
-app.get("/health", (r, s) => s.json({ status: "healthy" }));
-const PORT = 5101;
-app.listen(PORT, () => console.log("Concierge on " + PORT));
-export default app;
+import express, { Request, Response } from 'express';
+const router = express.Router();
+router.get('/', async (req: Request, res: Response) => { res.json({ service: 'concierge-services' }); });
+export default router;

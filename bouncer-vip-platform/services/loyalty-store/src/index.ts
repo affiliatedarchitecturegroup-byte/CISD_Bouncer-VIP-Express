@@ -1,4 +1,4 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
-router.get('/', async (req: Request, res: Response) => { res.json({ service: 'rewards-catalog' }); });
+router.get('/', async (req: Request, res: Response) => { res.json({ service: 'loyalty-store' }); });
 export default router;
