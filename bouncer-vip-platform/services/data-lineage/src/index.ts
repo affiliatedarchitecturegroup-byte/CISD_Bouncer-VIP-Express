@@ -1,4 +1,4 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
-router.get('/', async (req: Request, res: Response) => { res.json({ service: 'integration-hub' }); });
+router.get('/', async (req: Request, res: Response) => { res.json({ service: 'data-lineage' }); });
 export default router;
