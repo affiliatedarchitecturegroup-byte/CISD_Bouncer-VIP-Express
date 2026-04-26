@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bouncer-api-gateway
+  namespace: bouncer-vip
+  labels:
+    app: bouncer-api-gateway
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bouncer-api-gateway
+  template:
+    metadata:
+      labels:
+        app: bouncer-api-gateway
+        tier: frontend
+    spec:
+      containers:
+      - name: api-gateway
+        image: bouncer-api-gateway:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bouncer-api-gateway
+  namespace: bouncer-vip
+spec:
+  selector:
+    app: bouncer-api-gateway
+  ports:
+  - port: 80
+    targetPort: 3000
+  type: ClusterIP

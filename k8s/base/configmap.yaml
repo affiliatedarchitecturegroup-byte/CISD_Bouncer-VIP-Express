@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bouncer-config
+  namespace: bouncer-vip
+data:
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  ENABLE_METRICS: "true"
+  RATE_LIMIT_WINDOW: "15m"
+  RATE_LIMIT_MAX: "1000"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bouncer-secrets
+  namespace: bouncer-vip
+type: Opaque
+stringData:
+  DB_PASSWORD: "change-me"
+  JWT_SECRET: "change-me"
+  STRIPE_API_KEY: "change-me"
