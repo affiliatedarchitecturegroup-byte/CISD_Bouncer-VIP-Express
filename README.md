@@ -158,38 +158,81 @@ Priority: Launch supply chain OS
 ## Getting Started
 
 ### Prerequisites
-- Node.js 20+
-- Go 1.21+
-- Python 3.11+
-- Docker & Docker Compose
-- AWS CLI (for deployment)
 
-### Local Development
+- **Runtime:** Node.js 20+, Go 1.21+, Python 3.11+
+- **Containers:** Docker & Docker Compose
+- **Cloud (deployment):** AWS CLI, kubectl, terraform
+
+### Quick Start (Local Development)
 
 ```bash
-# Install dependencies
+# 1. Clone and install
+git clone https://github.com/affiliatedarchitecturegroup-byte/CISD_Bouncer-VIP-Express.git
+cd CISD_Bouncer-VIP-Express
 npm install
 
-# Start infrastructure (Docker)
+# 2. Copy environment template
+cp config/.env.example config/.env
+
+# 3. Start infrastructure
 docker compose up -d
 
-# Run development servers
+# 4. Verify services
+curl http://localhost:8000/health
+
+# 5. Run development servers
 npm run dev
+```
+
+### Using Makefile
+
+```bash
+make install        # Install dependencies
+make docker-up     # Start containers
+make dev           # Run dev servers
+make docker-down   # Stop containers
+make k8s-deploy    # Deploy to Kubernetes
+```
+
+### Docker Development
+
+```bash
+# Build and start all services
+docker compose build
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop and clean
+docker compose down -v
 ```
 
 ### Environment Variables
 
-Copy `.env.example` to `.env` and configure:
+Copy `config/.env.example` to `.env` and configure:
 
 ```bash
 # Database
 POSTGRES_PASSWORD=dev_password
 MONGO_PASSWORD=dev_password
 
-# API Keys (get from Infisical in production)
+# API Keys
 KONG_PASSWORD=dev_password
 GRAFANA_PASSWORD=dev_password
 ```
+
+### Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start all dev servers |
+| `npm run build` | Build all services |
+| `npm run test` | Run tests |
+| `npm run lint` | Lint code |
+| `npm run format` | Format code |
+| `make docker-up` | Start Docker |
+| `make k8s-deploy` | Deploy to K8s |
 
 ---
 
