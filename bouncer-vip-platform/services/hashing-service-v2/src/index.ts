@@ -1,4 +1,4 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
-router.get('/', async (req: Request, res: Response) => { res.json({ service: 'api-gateway-v3' }); });
+router.get('/', async (req: Request, res: Response) => { res.json({ service: 'hashing-service-v2' }); });
 export default router;
