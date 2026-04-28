@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const chains = ["ethereum", "polygon"];
+app.get("/api/chains", (r, s) => s.json({ data: chains }));
+app.post("/api/contract/deploy", (r, s) => s.json({ address: "0x...", tx: "0x..." }));
+app.post("/api/wallet/connect", (r, s) => s.json({ connected: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4802;
+app.listen(PORT, () => console.log("Web3 on " + PORT));
+export default app;

@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const twins = [];
+app.post("/api/twin", (r, s) => s.json({ twin_id: "t1", ...r.body }));
+app.get("/api/sync/:id", (r, s) => s.json({ synced: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5001;
+app.listen(PORT, () => console.log("DigitalTwin on " + PORT));
+export default app;

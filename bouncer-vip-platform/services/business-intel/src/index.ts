@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const reports = [];
+app.get("/api/reports", (r, s) => s.json({ data: reports }));
+app.post("/api/query", (r, s) => s.json({ results: [] }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4901;
+app.listen(PORT, () => console.log("BI on " + PORT));
+export default app;

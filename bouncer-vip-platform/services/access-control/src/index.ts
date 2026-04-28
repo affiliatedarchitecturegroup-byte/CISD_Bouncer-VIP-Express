@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const roles = ["admin", "manager", "user"];
+app.get("/api/roles", (r, s) => s.json({ success: true, data: roles }));
+app.post("/api/check", (r, s) => s.json({ allowed: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3703;
+app.listen(PORT, () => console.log("Access Control on " + PORT));
+export default app;

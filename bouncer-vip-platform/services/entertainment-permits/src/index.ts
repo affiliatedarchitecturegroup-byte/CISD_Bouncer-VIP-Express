@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const permits = [];
+app.get("/api/permits", (r, s) => s.json({ data: permits }));
+app.post("/api/permit/apply", (r, s) => s.json({ permit_id: "p1", status: "pending" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5401;
+app.listen(PORT, () => console.log("EntertainmentPermits on " + PORT));
+export default app;

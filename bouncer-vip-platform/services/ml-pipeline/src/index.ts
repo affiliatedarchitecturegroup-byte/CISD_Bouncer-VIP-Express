@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/models", (r, s) => s.json({ data: [] }));
+app.post("/api/train", (r, s) => s.json({ model_id: "m1", accuracy: 0.95 }));
+app.post("/api/predict", (r, s) => s.json({ prediction: 0.85 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3904;
+app.listen(PORT, () => console.log("ML on " + PORT));
+export default app;

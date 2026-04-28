@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/nodes", (r, s) => s.json({ data: [], count: 0 }));
+app.get("/api/cdn/functions", (r, s) => s.json({ data: [] }));
+app.post("/api/sync", (r, s) => s.json({ synced: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4605;
+app.listen(PORT, () => console.log("Edge on " + PORT));
+export default app;

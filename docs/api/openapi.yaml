@@ -1,0 +1,426 @@
+openapi: 3.0.3
+info:
+  title: Bouncer VIP Express API
+  description: |
+    Comprehensive API for nightclub VIP management, guest lists, table reservations, 
+    access control, and premium experiences.
+  version: 1.0.0
+  contact:
+    name: Bouncer VIP Platform
+    email: api@bouncervip.co.za
+  license:
+    name: Proprietary
+servers:
+  - url: https://api.bouncervip.co.za/v1
+    description: Production server
+  - url: https://staging-api.bouncervip.co.za/v1
+    description: Staging server
+  - url: http://localhost:3000/v1
+    description: Local development
+
+tags:
+  - name: Guests
+    description: Guest management operations
+  - name: VIP
+    description: VIP membership and tiers
+  - name: Access
+    description: Access control and entry
+  - name: Tables
+    description: Table reservations
+  - name: Events
+    description: Event management
+  - name: Staff
+    description: Staff operations
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+
+  /guests:
+    get:
+      tags: [Guests]
+      summary: List all guests
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, banned, pending]
+      responses:
+        '200':
+          description: Guest list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestList'
+    
+    post:
+      tags: [Guests]
+      summary: Create new guest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuestInput'
+      responses:
+        '201':
+          description: Guest created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guest'
+
+  /guests/{id}:
+    get:
+      tags: [Guests]
+      summary: Get guest by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Guest found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guest'
+        '404':
+          description: Guest not found
+
+    put:
+      tags: [Guests]
+      summary: Update guest
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuestInput'
+      responses:
+        '200':
+          description: Guest updated
+
+    delete:
+      tags: [Guests]
+      summary: Delete guest
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Guest deleted
+
+  /vip/memberships:
+    get:
+      tags: [VIP]
+      summary: List VIP memberships
+      responses:
+        '200':
+          description: VIP list
+    
+    post:
+      tags: [VIP]
+      summary: Create VIP membership
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VIPMembershipInput'
+      responses:
+        '201':
+          description: Membership created
+
+  /vip/tiers:
+    get:
+      tags: [VIP]
+      summary: List VIP tiers
+      responses:
+        '200':
+          description: Tier list
+
+  /access/verify:
+    post:
+      tags: [Access]
+      summary: Verify guest access
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guest_id:
+                  type: string
+                ticket_id:
+                  type: string
+      responses:
+        '200':
+          description: Access granted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  allowed:
+                    type: boolean
+                  reason:
+                    type: string
+
+  /tables/reserve:
+    post:
+      tags: [Tables]
+      summary: Reserve table
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableReservationInput'
+      responses:
+        '201':
+          description: Reservation created
+
+  /tables:
+    get:
+      tags: [Tables]
+      summary: List available tables
+      responses:
+        '200':
+          description: Table list
+
+  /events:
+    get:
+      tags: [Events]
+      summary: List events
+      parameters:
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Event list
+
+    post:
+      tags: [Events]
+      summary: Create event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '201':
+          description: Event created
+
+  /staff/shifts:
+    get:
+      tags: [Staff]
+      summary: List staff shifts
+      responses:
+        '200':
+          description: Shift list
+
+    post:
+      tags: [Staff]
+      summary: Create shift
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShiftInput'
+      responses:
+        '201':
+          description: Shift created
+
+components:
+  schemas:
+    Guest:
+      type: object
+      properties:
+        id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        status:
+          type: string
+          enum: [active, banned, pending]
+        vip_tier:
+          type: string
+          enum: [none, bronze, silver, gold, platinum, diamond]
+        created_at:
+          type: string
+          format: date-time
+
+    GuestInput:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - email
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        notes:
+          type: string
+
+    GuestList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Guest'
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total:
+              type: integer
+
+    VIPMembershipInput:
+      type: object
+      required:
+        - guest_id
+        - tier
+      properties:
+        guest_id:
+          type: string
+        tier:
+          type: string
+          enum: [bronze, silver, gold, platinum, diamond]
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+
+    TableReservationInput:
+      type: object
+      required:
+        - guest_id
+        - table_id
+        - date
+      properties:
+        guest_id:
+          type: string
+        table_id:
+          type: string
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+        guests:
+          type: integer
+        notes:
+          type: string
+
+    EventInput:
+      type: object
+      required:
+        - name
+        - date
+        - venue
+      properties:
+        name:
+          type: string
+        date:
+          type: string
+          format: date-time
+        venue:
+          type: string
+        description:
+          type: string
+        capacity:
+          type: integer
+
+    ShiftInput:
+      type: object
+      required:
+        - staff_id
+        - date
+        - start_time
+        - end_time
+      properties:
+        staff_id:
+          type: string
+        date:
+          type: string
+          format: date
+        start_time:
+          type: string
+        end_time:
+          type: string
+        role:
+          type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+security:
+  - bearerAuth: []
+  - apiKey: []

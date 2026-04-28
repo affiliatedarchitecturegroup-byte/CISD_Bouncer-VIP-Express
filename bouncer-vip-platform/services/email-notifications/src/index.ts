@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const templates = [{ id: "welcome", subject: "Welcome" }];
+app.post("/api/send", (r, s) => s.json({ success: true, message_id: "em1" }));
+app.get("/api/templates", (r, s) => s.json({ success: true, data: templates }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3802;
+app.listen(PORT, () => console.log("Email on " + PORT));
+export default app;

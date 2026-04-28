@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const locations = [];
+app.get("/api/locations", (r, s) => s.json({ data: locations }));
+app.get("/api/compare", (r, s) => s.json({ comparison: {} }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5500;
+app.listen(PORT, () => console.log("MultiLocation on " + PORT));
+export default app;

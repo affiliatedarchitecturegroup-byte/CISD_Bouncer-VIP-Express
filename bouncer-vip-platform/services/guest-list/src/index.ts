@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const guests = [];
+app.get("/api/guests", (r, s) => s.json({ data: guests }));
+app.post("/api/guest/add", (r, s) => s.json({ guest_id: "g1", approved: true }));
+app.post("/api/checkin", (r, s) => s.json({ checked_in: true, time: new Date() }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5102;
+app.listen(PORT, () => console.log("GuestList on " + PORT));
+export default app;

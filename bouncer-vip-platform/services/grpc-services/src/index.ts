@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const services = ["user", "order", "payment"];
+app.get("/api/services", (r, s) => s.json({ data: services }));
+app.post("/api/call", (r, s) => s.json({ response: {}, code: 200 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4603;
+app.listen(PORT, () => console.log("gRPC on " + PORT));
+export default app;

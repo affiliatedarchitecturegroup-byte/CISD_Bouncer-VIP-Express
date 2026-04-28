@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/metrics", (r, s) => s.json({ cpu: 50, memory: 60 }));
+app.get("/api/logs", (r, s) => s.json({ data: [] }));
+app.get("/api/traces", (r, s) => s.json({ data: [] }));
+app.post("/api/alerts", (r, s) => s.json({ created: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4000;
+app.listen(PORT, () => console.log("Monitoring on " + PORT));
+export default app;

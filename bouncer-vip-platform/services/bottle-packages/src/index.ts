@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const packages = [{ id: "p1", name: "Gold Package", price: 1500, bottles: 3 }];
+app.get("/api/packages", (r, s) => s.json({ data: packages }));
+app.post("/api/package/custom", (r, s) => s.json({ package_id: "cp1" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5300;
+app.listen(PORT, () => console.log("BottlePkg on " + PORT));
+export default app;

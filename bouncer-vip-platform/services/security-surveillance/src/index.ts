@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const incidents = [];
+app.get("/api/cameras", (r, s) => s.json({ data: [] }));
+app.post("/api/incident", (r, s) => s.json({ reported: true, id: "i1" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5203;
+app.listen(PORT, () => console.log("SecuritySurv on " + PORT));
+export default app;

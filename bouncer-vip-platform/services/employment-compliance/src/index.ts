@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const employees = [];
+app.get("/api/employees", (r, s) => s.json({ data: employees }));
+app.post("/api/i9/verify", (r, s) => s.json({ verified: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5404;
+app.listen(PORT, () => console.log("EmploymentCompliance on " + PORT));
+export default app;

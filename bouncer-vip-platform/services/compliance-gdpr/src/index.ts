@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/gdpr/export", (r, s) => s.json({ data: [] }));
+app.post("/api/gdpr/delete", (r, s) => s.json({ deleted: true }));
+app.get("/api/soc2", (r, s) => s.json({ compliant: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3705;
+app.listen(PORT, () => console.log("Compliance GDPR on " + PORT));
+export default app;

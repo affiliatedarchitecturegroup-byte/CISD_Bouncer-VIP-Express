@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const webhooks = [];
+app.post("/api/webhook", (r, s) => { webhooks.push(r.body); s.json({ received: true }); });
+app.get("/api/webhooks/logs", (r, s) => s.json({ logs: webhooks }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5901;
+app.listen(PORT, () => console.log("Webhooks on " + PORT));
+export default app;

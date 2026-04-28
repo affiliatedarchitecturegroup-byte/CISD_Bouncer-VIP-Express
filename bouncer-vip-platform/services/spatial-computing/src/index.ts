@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const overlays = [];
+app.get("/api/ar/overlays", (r, s) => s.json({ data: overlays }));
+app.post("/api/gesture", (r, s) => s.json({ detected: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4803;
+app.listen(PORT, () => console.log("Spatial on " + PORT));
+export default app;

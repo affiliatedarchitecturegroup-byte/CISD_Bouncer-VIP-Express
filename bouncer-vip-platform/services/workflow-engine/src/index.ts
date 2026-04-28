@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const workflows = [];
+app.get("/api/workflows", (r, s) => s.json({ data: workflows }));
+app.post("/api/workflows", (r, s) => { workflows.push(r.body); s.json({ id: "w1" }); });
+app.post("/api/execute/:id", (r, s) => s.json({ executed: true, steps: 5 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4600;
+app.listen(PORT, () => console.log("Workflow on " + PORT));
+export default app;

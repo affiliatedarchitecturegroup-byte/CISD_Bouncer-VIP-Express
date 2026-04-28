@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const pipelines = [];
+app.get("/api/pipelines", (r, s) => s.json({ data: pipelines }));
+app.post("/api/etl", (r, s) => s.json({ pipeline_id: "p1", status: "created" }));
+app.post("/api/run/:id", (r, s) => s.json({ status: "running", records: 1000 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4705;
+app.listen(PORT, () => console.log("DataPipeline on " + PORT));
+export default app;

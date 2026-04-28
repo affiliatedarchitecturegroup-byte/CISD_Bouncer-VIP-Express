@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const commands = ["deploy", "status", "logs", "debug"];
+app.get("/api/commands", (r, s) => s.json({ data: commands }));
+app.post("/api/run", (r, s) => s.json({ output: "done", code: 0 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4201;
+app.listen(PORT, () => console.log("CLI on " + PORT));
+export default app;

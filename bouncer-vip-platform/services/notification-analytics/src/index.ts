@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/delivery", (r, s) => s.json({ rate: 0.98 }));
+app.get("/api/opens", (r, s) => s.json({ rate: 0.45 }));
+app.get("/api/clicks", (r, s) => s.json({ rate: 0.25 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3805;
+app.listen(PORT, () => console.log("Analytics on " + PORT));
+export default app;

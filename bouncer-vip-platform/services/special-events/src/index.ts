@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const themes = ["halloween", "nye", "release"];
+app.get("/api/themes", (r, s) => s.json({ data: themes }));
+app.post("/api/event/create", (r, s) => s.json({ event_id: "se1" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5601;
+app.listen(PORT, () => console.log("SpecialEvents on " + PORT));
+export default app;

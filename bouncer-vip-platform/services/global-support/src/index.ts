@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const locales = ["en", "sw", "fr", "ar", "pt", "es"];
+app.get("/api/locales", (r, s) => s.json({ data: locales }));
+app.post("/api/ticket", (r, s) => s.json({ ticket_id: "t1" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4505;
+app.listen(PORT, () => console.log("Global on " + PORT));
+export default app;

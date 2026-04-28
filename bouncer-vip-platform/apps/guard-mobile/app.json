@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "Bouncer Guard App",
+    "slug": "bouncer-guard-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a1a2e"
+    },
+    "assetBundlePaths": ["./assets"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bouncervip.guard",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Camera access is required for shift check-in and incident reporting",
+        "NSLocationWhenInUseUsageDescription": "Location is needed for shift tracking and venue check-in",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Location is needed for shift tracking and safety alerts",
+        "NSFaceIDUsageDescription": "Biometric authentication for secure app access"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a1a2e"
+      },
+      "package": "com.bouncervip.guard",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "plugins": [
+      "expo-location",
+      "expo-image-picker",
+      "expo-notifications",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "bouncer-vip-guard-app"
+      }
+    }
+  }
+}

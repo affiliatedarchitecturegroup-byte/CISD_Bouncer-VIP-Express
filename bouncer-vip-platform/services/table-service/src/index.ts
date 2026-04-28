@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const tables = [{ id: "t1", name: "Table 1", capacity: 10, price: 500 }];
+app.get("/api/tables", (r, s) => s.json({ data: tables }));
+app.post("/api/table/book", (r, s) => s.json({ reservation_id: "r1", confirmed: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5103;
+app.listen(PORT, () => console.log("TableService on " + PORT));
+export default app;

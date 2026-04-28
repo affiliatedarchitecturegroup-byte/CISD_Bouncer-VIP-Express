@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const notifications = [];
+app.post("/api", (r, s) => { notifications.push(r.body); s.json({ success: true }); });
+app.get("/api", (r, s) => s.json({ success: true, data: notifications }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3803;
+app.listen(PORT, () => console.log("InApp on " + PORT));
+export default app;

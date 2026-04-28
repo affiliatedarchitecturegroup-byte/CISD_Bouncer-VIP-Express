@@ -1,0 +1,11 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const sessions = [];
+app.get("/api/presence", (r, s) => s.json({ users: [] }));
+app.post("/api/cursor", (r, s) => s.json({ updated: true }));
+app.post("/api/comment", (r, s) => s.json({ created: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 4700;
+app.listen(PORT, () => console.log("Collab on " + PORT));
+export default app;

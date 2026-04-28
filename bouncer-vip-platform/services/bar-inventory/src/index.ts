@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const menu = [{ id: "m1", name: "Vodka", price: 12, stock: 50 }];
+app.get("/api/menu", (r, s) => s.json({ data: menu }));
+app.post("/api/pour", (r, s) => s.json({ recorded: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5201;
+app.listen(PORT, () => console.log("BarInventory on " + PORT));
+export default app;

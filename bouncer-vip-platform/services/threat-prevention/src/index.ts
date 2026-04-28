@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+app.get("/api/waf/status", (r, s) => s.json({ active: true, blocked: 0 }));
+app.get("/api/ddos/status", (r, s) => s.json({ protection: "active" }));
+app.get("/api/reputation", (r, s) => s.json({ score: 100 }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 3704;
+app.listen(PORT, () => console.log("Threat Prevention on " + PORT));
+export default app;

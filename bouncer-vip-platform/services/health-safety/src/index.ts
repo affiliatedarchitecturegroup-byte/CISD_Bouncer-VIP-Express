@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const inspections = [];
+app.get("/api/inspections", (r, s) => s.json({ data: inspections }));
+app.post("/api/inspection/schedule", (r, s) => s.json({ scheduled: true }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5402;
+app.listen(PORT, () => console.log("HealthSafety on " + PORT));
+export default app;

@@ -1,0 +1,10 @@
+import express from "express";
+const app = express();
+app.use(express.json());
+const suppliers = [];
+app.get("/api/suppliers", (r, s) => s.json({ data: suppliers }));
+app.post("/api/order", (r, s) => s.json({ order_id: "o1", status: "processing" }));
+app.get("/health", (r, s) => s.json({ status: "healthy" }));
+const PORT = 5502;
+app.listen(PORT, () => console.log("CentralInventory on " + PORT));
+export default app;
